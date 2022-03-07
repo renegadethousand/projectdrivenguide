@@ -16,12 +16,12 @@ public class BankStatementAnalyzer {
 
         final List<BankTransaction> bankTransactions = bankStatementParser.parseLinesFrom(lines);
 
-        final BankStatementProcessor bankStatmentProcessor = new BankStatementProcessor(bankTransactions);
+        final BankTransactionProcessor bankStatmentProcessor = new BankTransactionProcessor(bankTransactions);
 
         collectSummary(bankStatmentProcessor);
     }
 
-    private static void collectSummary(BankStatementProcessor bankStatmentProcessor) {
+    private static void collectSummary(BankTransactionProcessor bankStatmentProcessor) {
         System.out.println("The total for all transactions is "
                 + bankStatmentProcessor.calculateTotalAmount());
 
