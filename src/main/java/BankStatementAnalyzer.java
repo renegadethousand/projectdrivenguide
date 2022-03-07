@@ -6,40 +6,24 @@ import java.time.Month;
 import java.util.List;
 
 public class BankStatementAnalyzer {
-
     private static final String RESOURCES = "src/main/resources/";
 
-    public void analyze(final String fileName, final BankStatementParser bankStatementParser) throws IOException {
+    public void analyze(final String fileName,
+                        final BankStatementParser bankStatementParser,
+                        final Exporter exporter) throws IOException {
 
         final Path path = Paths.get(RESOURCES + fileName);
-        List<String> lines = Files.readAllLines(path);
+        final List<String> lines = Files.readAllLines(path);
 
         final List<BankTransaction> bankTransactions = bankStatementParser.parseLinesFrom(lines);
 
-        final BankTransactionProcessor bankStatmentProcessor = new BankTransactionProcessor(bankTransactions);
+        final BankStatementProcessor bankStatementProcessor = new BankStatementProcessor(bankTransactions);
 
-        collectSummary(bankStatmentProcessor);
+        final SummaryStatistics summaryStatistics = bankStatementProcessor.summarizeTransactions();
+
+        System.out.println(exporter.export(summaryStatistics));
+
     }
 
-    private static void collectSummary(BankTransactionProcessor bankStatmentProcessor) {
-        System.out.println("The total for all transactions is "
-                + bankStatmentProcessor.calculateTotalAmount());
 
-        System.out.println("The total for transactions in January is "
-                + bankStatmentProcessor.selectTotalInMonth(Month.JANUARY));
-
-        System.out.println("The total for transactions in February is "
-                + bankStatmentProcessor.selectTotalInMonth(Month.FEBRUARY));
-
-        System.out.println("The total salary received is "
-                + bankStatmentProcessor.selectTotalForCategory("Salary"));
-
-        System.out.println("The total for transactions in February is and expensive (instance) " +
-                bankStatmentProcessor.findTransactions(new BankTransactionIsInFebruaryAndExpensive()));
-
-        System.out.println("The total for transactions in February is and expensive (lambda) " +
-                bankStatmentProcessor.findTransactions(bankTransaction ->
-                        bankTransaction.getDate().getMonth() == Month.FEBRUARY
-                        && bankTransaction.getAmount() >= 1_000));
-    }
 }

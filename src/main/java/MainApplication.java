@@ -2,14 +2,17 @@ import java.io.IOException;
 
 public class MainApplication {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(final String[] args) throws Exception {
 
-        final String fileName = "bank.csv";
+        final BankStatementAnalyzer bankStatementAnalyzer
+                = new BankStatementAnalyzer();
 
-        final BankStatementAnalyzer bankStatementAnalyzer = new BankStatementAnalyzer();
+        final BankStatementParser bankStatementParser
+                = new BankStatementCSVParser();
 
-        final BankStatementCSVParser bankStatementParser = new BankStatementCSVParser();
+        final Exporter exporter = new HtmlExporter();
 
-        bankStatementAnalyzer.analyze(fileName, bankStatementParser);
+        bankStatementAnalyzer.analyze("bank-data-simple.csv", bankStatementParser, exporter);
+
     }
 }
